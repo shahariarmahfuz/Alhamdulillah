@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "i",
+  name: "gemi",
   version: "1.0.0",
   permssion: 0,
   credits: "Deku",
