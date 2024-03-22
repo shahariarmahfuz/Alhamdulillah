@@ -1,11 +1,11 @@
 module.exports.config = {
 	name: "confess",
 	version: "1.0.1",
-	hasPermssion: 0,
+	permssion: 0,
 	credits: "Deku",
   prefix: true,
 	description: "Confess to someone (⁠◍⁠•⁠ᴗ⁠•⁠◍⁠)",
-	commandCategory: "...",
+	category: "this is",
 	usages: "[Your message. | fb url]",
 	cooldowns: 5,
 };
