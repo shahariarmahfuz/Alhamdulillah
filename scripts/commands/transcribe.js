@@ -1,20 +1,16 @@
 const axios = require("axios");
 
-const config = {
-  name: "transcribe",
-  aliases: ["ts"],
+module.exports.config = {
+  name: "ts",
   version: "1.1",
-  author: "Samir Œ",
+  permission: 2,
+  credits: "Samir Œ",
   prefix: true,
-  countDown: 10,
-  role: 0,
-  shortDescription: {
-    en: "Converts speech into text."
-  },
-  longDescription: {
-    en: "Converts speech into text using the Google Cloud Speech-to-Text API."
-  },
-  category: "AI",
+  description: "Converts speech into text",
+  category: "admin",
+  usages: "uid",
+  cooldowns: 0
+ 
   guide: {
     en: "{pn} reply to an audio/video"
   }
