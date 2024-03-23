@@ -4,10 +4,10 @@ const axios = require('axios');
 module.exports.config = {
   name: "shairi",
   version: "1.0.0",
-  hasPermssion: 0,
+  permssion: 0,
   credits: "Nayan",
   description: "একটি র‍্যান্ডম শাইরি ভিডিও প্রদান করে",
-  commandCategory: "media",
+  category: "media",
   usages: "",
   cooldowns: 5,
   dependencies: {
