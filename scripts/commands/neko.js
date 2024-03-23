@@ -13,17 +13,10 @@ module.exports = {
   },
   const request = require('request');
 
-const PAGE_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
-const EASY_API_KEY = process.env.EASY_API_KEY;
-
 const endpoint = 'https://api.easy-api.online/api/sfw/neko';
 
 const sendNekoImage = (recipientId) => {
-  request.get(endpoint, {
-    headers: {
-      'Authorization': `Bearer ${EASY_API_KEY}`
-    }
-  }, (error, response, body) => {
+  request.get(endpoint, (error, response, body) => {
     if (error) {
       console.log(error);
       return;
@@ -45,33 +38,9 @@ const sendNekoImage = (recipientId) => {
       }
     };
 
-    sendAPIRequest(message);
+    npm install request
   });
 };
-
-const sendAPIRequest = (message) => {
-  request({
-    url: 'https://graph.facebook.com/v14.0/me/messages',
-    qs: {
-      access_token: PAGE_ACCESS_TOKEN
-    },
-    method: 'POST',
-    json: message
-  }, (error, response, body) => {
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    console.log('Message sent successfully');
-  });
-};
-
-// মেসেজ রিসিভ করার জন্য Webhook সেটআপ
-
-// ...
-
-// মেসেজ প্রসেসিং
 
 app.post('/webhook', (req, res) => {
   const body = req.body;
@@ -96,6 +65,5 @@ app.post('/webhook', (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
+console.log('Server is listening on port 3000');
 });
