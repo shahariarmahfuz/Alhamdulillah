@@ -1,7 +1,3 @@
-let url = "https://api.easy-api.online/api/sfw/neko";
-const { get } = require('axios'), fs = require('fs');
-let f = __dirname+'/cache/emi.png';
-
 module.exports = {
   config: {
     name: "neko",
@@ -14,23 +10,43 @@ module.exports = {
     usages: "[prompt]",
     cooldowns: 5,
   },
-  run: async function({api, event, args}){
-    function r(msg){
-      api.sendMessage(msg, event.threadID, event.messageID);
-    }
-    
-    if (!args[0]) return r('Missing prompt!');
-    
-    const a = args.join(" ")
-    if (!a) return r('Missing prompt!');
-    try {
-      const d = (await get(url, {
-        responseType: 'arraybuffer'
-      })).data;
-      fs.writeFileSync(f, Buffer.from(d, "utf8"));
-      return r({attachment: fs.createReadStream(f, () => fs.unlinkSync(f))});
-    } catch (e){
-      return r(e.message)
-    }
+  const axios = require('axios');
+const fs = require('fs');
+const { MessengerClient } = require('messaging-api-messenger');
+
+// Initialize Messenger Client with your access token
+const client = MessengerClient.connect('YOUR_ACCESS_TOKEN');
+
+// Function to get image from the API and send as an attachment
+async function getImageAndSend(senderId) {
+  try {
+    // Get the image from the API
+    const response = await axios({
+      method: 'get',
+      url: 'https://api.easy-api.online/api/sfw/neko',
+      responseType: 'stream'
+    });
+
+    // Save the image to a file
+    const path = `./temp_image.png`;
+    const writer = fs.createWriteStream(path);
+    response.data.pipe(writer);
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+
+    // Send the image to the user
+    await client.sendImage(senderId, path);
+
+    // Delete the image file after sending
+    fs.unlinkSync(path);
+  } catch (error) {
+    console.error('Failed to retrieve image:', error);
   }
 }
+
+// Example usage
+// Replace 'USER_ID' with the actual sender ID
+getImageAndSend('USER_ID');
+  
