@@ -1,13 +1,29 @@
 const request = require('request');
 const fs = require('fs');
 
-// মেসেঞ্জার বট কমান্ড হ্যান্ডলার
-function handleBotCommand(userInput) {
-  // এখানে আপনার এপিআই এন্ডপয়েন্ট এবং টোকেন যোগ করুন
-  const apiEndpoint = 'https://rule34.xxx/';
-  const token = 'https://rule34.xxx/';
+module.exports.config = {
+  name: "my",
+  version: "1.0.0",
+  permission: 0,
+  credits: "Nayan",
+  description: "msg",
+  commands: [
+    {
+      name: "searchImage",
+      description: "Searches for an image based on user input",
+      usages: "[query]",
+      cooldowns: 5,
+      dependencies: { "request": "", "fs": "" }
+    }
+  ]
+};
 
-  // এপিআই কল করে ছবি সার্চ করা
+// Messenger bot command handler
+function handleBotCommand(userInput) {
+  const apiEndpoint = 'https://rule34.xxx/'; // Add your API endpoint here
+  const token = 'https://rule34.xxx/'; // Add your API token here
+
+  // API call to search for an image
   request({
     url: apiEndpoint,
     qs: { token: token, query: userInput },
@@ -17,21 +33,25 @@ function handleBotCommand(userInput) {
       const imageUrl = JSON.parse(body).imageUrl;
       downloadImage(imageUrl);
     } else {
-      console.error('ছবি সার্চ করতে সমস্যা হয়েছে:', error);
+      console.error('Error searching for image:', error);
     }
   });
 }
 
-// ছবি ডাউনলোড করা
+// Download the image
 function downloadImage(imageUrl) {
   const filename = 'downloaded_image.jpg';
 
   request.head(imageUrl, function(err, res, body){
+    if (err) {
+      console.error('Error downloading image:', err);
+      return;
+    }
     request(imageUrl).pipe(fs.createWriteStream(filename)).on('close', function() {
-      console.log('ছবি ডাউনলোড সম্পন্ন:', filename);
+      console.log('Image download complete:', filename);
     });
   });
 }
 
-// উদাহরণ কমান্ড যা বট প্রসেস করবে
-handleBotCommand('কুকুরের ছবি');
+// Example command that the bot will process
+handleBotCommand('picture of a dog');
