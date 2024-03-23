@@ -1,13 +1,15 @@
 module.exports.config = {
-    name: "app",
-    version: "1.0.0",
-    permssion: 0,
-    credits: "D-Jukie",
-    description: "Thêm người dùng vào nhóm bằng link hoặc UID",
+  name: "app",
+  version: "1.0.0",
+  permission: 0,
+  credits: "Nayan",
+  description: "all groups",
   prefix: true,
-    category: "Box chat",
-    usages: "< link/UID >",
-    cooldowns: 5
+  category: "admin",
+  usages: "groups",
+  cooldowns: 5,
+};
+
   const axios = require("axios")
 const express = require("express");
 const app = express();
