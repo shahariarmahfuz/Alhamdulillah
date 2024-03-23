@@ -1,6 +1,16 @@
 const express = require('express');
-const app = express();
-const port = 8000; // পোর্ট নম্বর পরিবর্তন করা হয়েছে
+module.exports.config = {
+    name: "bot",
+  version: "1.0.0",
+  permission: 0,
+  credits: "Nayan",
+  description: "msg",
+  prefix: true, 
+  category: "user", 
+  usages: "",
+  cooldowns: 5,
+  dependencies: {
+  } // পোর্ট নম্বর পরিবর্তন করা হয়েছে
 
 app.use(express.json());
 
