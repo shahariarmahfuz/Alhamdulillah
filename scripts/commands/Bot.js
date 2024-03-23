@@ -1,32 +1,26 @@
-const express = require('express');
 module.exports.config = {
-    name: "bot",
+  name: "bot",
   version: "1.0.0",
-  permission: 0,
+  hasPermission: 0,
   credits: "Nayan",
   description: "msg",
-  prefix: true, 
-  category: "user", 
+  commandCategory: "user",
   usages: "",
   cooldowns: 5,
-  dependencies: {
-  } // পোর্ট নম্বর পরিবর্তন করা হয়েছে
+  dependencies: {}
+};
 
-app.use(express.json());
-
-app.post('/reply', (req, res) => {
-  const message = req.body.message;
+module.exports.run = async ({ api, event, args }) => {
+  let message = event.body; // মেসেজ পাঠানোর জন্য বডি থেকে পাঠানো হচ্ছে
   let reply = '';
 
-  if(message === 'hello') {
-    reply = 'world';
+  // নির্দিষ্ট লেখা যাচাই করা
+  if (message.toLowerCase() === "হ্যালো") {
+    reply = "Hello there!"; // নির্দিষ্ট উত্তর দেওয়া
   } else {
-    reply = 'I did not understand your message.';
+    reply = "I did not understand your message."; // ডিফল্ট উত্তর
   }
 
-  res.json({ reply: reply });
-});
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`); // কনসোল লগে পোর্ট নম্বর পরিবর্তন করা হয়েছে
-});
+  // উত্তর পাঠানো
+  return api.sendMessage(reply, event.threadID);
+};
