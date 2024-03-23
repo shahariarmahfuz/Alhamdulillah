@@ -19,7 +19,7 @@ module.exports.run = async ({ api, event, args }) => {
   if (message.toLowerCase() === "হ্যালো") {
     reply = "Hello there!"; // নির্দিষ্ট উত্তর দেওয়া
   } else {
-    reply = "I did not understand your message."; // ডিফল্ট উত্তর
+    reply = "আসসালামুয়ালাইকুম আমি আপনাকে কিভাবে সাহায্য করতে পারি?."; // ডিফল্ট উত্তর
   }
 
   // উত্তর পাঠানো
