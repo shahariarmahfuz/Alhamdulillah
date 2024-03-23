@@ -6,6 +6,7 @@ module.exports.config = {
   version: "1.0.0",
   permssion: 0,
   credits: "Nayan",
+  prefix: true,
   description: "একটি র‍্যান্ডম শাইরি ভিডিও প্রদান করে",
   category: "media",
   usages: "",
