@@ -1,69 +1,36 @@
+let url = "https://api.easy-api.online/api/sfw/neko";
+const { get } = require('axios'), fs = require('fs');
+let f = __dirname+'/cache/emi.png';
 
 module.exports = {
   config: {
     name: "neko",
-  	version: "1.0.0",
-  	permssion: 0,
+    version: "1.0.0",
+    permssion: 0,
     credits: "Deku",
     prefix: true,
-	  description: "Generate image in emi",
-  	category: "AI",
-  	usages: "[prompt]",
-  	cooldowns: 5,
+    description: "Generate image in emi",
+    category: "AI",
+    usages: "[prompt]",
+    cooldowns: 5,
   },
-  const request = require('request');
-
-const endpoint = 'https://api.easy-api.online/api/sfw/neko';
-
-const sendNekoImage = (recipientId) => {
-  request.get(endpoint, (error, response, body) => {
-    if (error) {
-      console.log(error);
-      return;
+  run: async function({api, event, args}){
+    function r(msg){
+      api.sendMessage(msg, event.threadID, event.messageID);
     }
-
-    const imageURL = JSON.parse(body).url;
-
-    const message = {
-      recipient: {
-        id: recipientId
-      },
-      message: {
-        attachment: {
-          type: 'image',
-          payload: {
-            url: imageURL
-          }
-        }
-      }
-    };
-
-    npm install request
-  });
-};
-
-app.post('/webhook', (req, res) => {
-  const body = req.body;
-
-  if (body.object === 'page' && body.entry) {
-    const entries = body.entry;
-
-    entries.forEach((entry) => {
-      const messaging = entry.messaging;
-
-      messaging.forEach((message) => {
-        const senderId = message.sender.id;
-        const text = message.message.text;
-
-        if (text === 'neko') {
-          sendNekoImage(senderId);
-        }
-      });
-    });
+    
+    if (!args[0]) return r('Missing prompt!');
+    
+    const a = args.join(" ")
+    if (!a) return r('Missing prompt!');
+    try {
+      const d = (await get(url, {
+        responseType: 'arraybuffer'
+      })).data;
+      fs.writeFileSync(f, Buffer.from(d, "utf8"));
+      return r({attachment: fs.createReadStream(f, () => fs.unlinkSync(f))});
+    } catch (e){
+      return r(e.message)
+    }
   }
-
-  res.sendStatus(200);
-});
-
-console.log('Server is listening on port 3000');
-});
+}
