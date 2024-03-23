@@ -6,6 +6,8 @@ module.exports.config = {
   version: "1.0.0",
   permission: 0,
   credits: "Nayan",
+  category: "user",
+  prefix: true,
   description: "msg",
   commands: [
     {
