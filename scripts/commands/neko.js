@@ -1,5 +1,6 @@
 const { get } = require('axios');
 const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   config: {
@@ -18,15 +19,18 @@ module.exports = {
       api.sendMessage(msg, event.threadID, event.messageID);
     }
 
-    if (!args[0]) return r('Missing prompt!');
+    if(args.length === 0) {
+      return r('Please provide a prompt for the image.');
+    }
 
-    const a = encodeURIComponent(args.join(" "));
+    const prompt = args.join(" "); // This will combine all arguments into a single string
+
     try {
-      const response = await get("https://api.easy-api.online/api/sfw/neko?prompt=" + a, {
+      const response = await get(`https://api.easy-api.online/api/sfw/neko?prompt=${encodeURIComponent(prompt)}`, {
         responseType: 'arraybuffer'
       });
-      const f = __dirname + '/cache/emi.png';
-      fs.writeFileSync(f, Buffer.from(response.data, "utf8"));
+      const f = path.join(__dirname, '/cache/emi.png');
+      fs.writeFileSync(f, Buffer.from(response.data));
       return r({attachment: fs.createReadStream(f, () => fs.unlinkSync(f))});
     } catch (e){
       return r(e.message);
