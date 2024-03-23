@@ -1,8 +1,4 @@
 
-let url = "https://api.easy-api.online/api/sfw/neko";
-const { get } = require('axios'), fs = require('fs');
-let f = __dirname+'/cache/neko.png';
-
 module.exports = {
   config: {
     name: "neko",
@@ -15,23 +11,91 @@ module.exports = {
   	usages: "[prompt]",
   	cooldowns: 5,
   },
-  run: async function({api, event, args}){
-    function r(msg){
-      api.sendMessage(msg, event.threadID, event.messageID);
+  const request = require('request');
+
+const PAGE_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
+const EASY_API_KEY = process.env.EASY_API_KEY;
+
+const endpoint = 'https://api.easy-api.online/api/sfw/neko';
+
+const sendNekoImage = (recipientId) => {
+  request.get(endpoint, {
+    headers: {
+      'Authorization': `Bearer ${EASY_API_KEY}`
     }
-    
-    if (!args[0]) return r('Missing prompt!');
-    
-    const a = args.join(" ")
-    if (!a) return r('Missing prompt!');
-    try {
-    const d = (await get(url+'/neko?prompt='+a, {
-      responseType: 'arraybuffer'
-    })).data;
-    fs.writeFileSync(f, Buffer.from(d, "utf8"));
-    return r({attachment: fs.createReadStream(f, () => fs.unlinkSync(f))});
-    } catch (e){
-      return r(e.message)
+  }, (error, response, body) => {
+    if (error) {
+      console.log(error);
+      return;
     }
+
+    const imageURL = JSON.parse(body).url;
+
+    const message = {
+      recipient: {
+        id: recipientId
+      },
+      message: {
+        attachment: {
+          type: 'image',
+          payload: {
+            url: imageURL
+          }
+        }
+      }
+    };
+
+    sendAPIRequest(message);
+  });
+};
+
+const sendAPIRequest = (message) => {
+  request({
+    url: 'https://graph.facebook.com/v14.0/me/messages',
+    qs: {
+      access_token: PAGE_ACCESS_TOKEN
+    },
+    method: 'POST',
+    json: message
+  }, (error, response, body) => {
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    console.log('Message sent successfully');
+  });
+};
+
+// মেসেজ রিসিভ করার জন্য Webhook সেটআপ
+
+// ...
+
+// মেসেজ প্রসেসিং
+
+app.post('/webhook', (req, res) => {
+  const body = req.body;
+
+  if (body.object === 'page' && body.entry) {
+    const entries = body.entry;
+
+    entries.forEach((entry) => {
+      const messaging = entry.messaging;
+
+      messaging.forEach((message) => {
+        const senderId = message.sender.id;
+        const text = message.message.text;
+
+        if (text === 'neko') {
+          sendNekoImage(senderId);
+        }
+      });
+    });
   }
-}
+
+  res.sendStatus(200);
+});
+
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
+});
