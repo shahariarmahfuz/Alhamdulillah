@@ -19,11 +19,8 @@ module.exports = {
       api.sendMessage(msg, event.threadID, event.messageID);
     }
 
-    if(args.length === 0) {
-      return r('Please provide a prompt for the image.');
-    }
-
-    const prompt = args.join(" "); // This will combine all arguments into a single string
+    // যদি কোন প্রম্পট না থাকে, তাহলে ডিফল্ট প্রম্পট হিসেবে 'neko' ব্যবহার করা হবে
+    const prompt = args.length > 0 ? args.join(" ") : 'neko'; // এখানে প্রম্পট সেট করা হচ্ছে
 
     try {
       const response = await get(`https://api.easy-api.online/api/sfw/neko?prompt=${encodeURIComponent(prompt)}`, {
