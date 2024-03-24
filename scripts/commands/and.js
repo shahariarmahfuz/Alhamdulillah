@@ -4,9 +4,9 @@ module.exports.config = {
 	permission: 0,
 	credits: "nayan",
 	prefix: true,
-	description: "Download a random Islamic image from Google",
+	description: "Download a random image from a set of categories",
 	category: "media",
-	usages: "hadis",
+	usages: "image",
 	cooldowns: 10,
 	dependencies: {
 		"axios": "",
@@ -29,17 +29,18 @@ module.exports.run = async ({ api, event }) => {
 		// এখানে আরও হাদিস যোগ করুন
 	];
 
-	const query = "Islamic image"; // সার্চ কোয়েরি হিসেবে 'Islamic image' ব্যবহার করা হয়েছে
+	const queries = ["Islamic image", "Kaaba image", "beautiful flower image"]; // সার্চ কোয়েরির অ্যারে
 
 	try {
-		let result = await google.image(query, { safe: false });
+		const randomQuery = queries[Math.floor(Math.random() * queries.length)]; // রেনডম কোয়েরি নির্বাচন
+		let result = await google.image(randomQuery, { safe: false });
 		if (result.length === 0) return; // কোনো মেসেজ প্রদর্শন না করে ফাংশন থেকে বের হয়ে যাবে
 
 		const randomIndex = Math.floor(Math.random() * result.length);
 		const imageUrl = result[randomIndex].url;
-		const randomHadis = hadisList[Math.floor(Math.random() * hadisList.length)]; // রেনডম হাদিস নির্বাচন করা হয়েছে
+		const randomHadis = hadisList[Math.floor(Math.random() * hadisList.length)]; // রেনডম হাদিস নির্বাচন
 
-		let path = __dirname + `/cache/hadis-image.jpg`;
+		let path = __dirname + `/cache/image.jpg`;
 		let buffer = await cloudscraper.get({ uri: imageUrl, encoding: null });
 		fs.writeFileSync(path, buffer);
 
