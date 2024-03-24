@@ -3,71 +3,44 @@ module.exports.config = {
   version: "1.0.0",
   permission: 2,
   credits: "NAYAN",
-  prefix: true,
-  description: "make friends via facebook id",
+  description: "Accept incoming friend requests (Use with caution)",
   category: "admin",
-  usages: "[add/del] [id]",
-  cooldowns: 0,
-};
-
-module.exports.handleReply = async ({ handleReply, event, api }) => {
-  const { author, listRequest } = handleReply;
-  if (author != event.senderID) return;
-  const args = event.body.replace(/ +/g, " ").toLowerCase().split(" ");
-  if (args.length < 2) return api.sendMessage("Please specify action and ID.", event.threadID, event.messageID);
-  const action = args[0];
-  const targetID = parseInt(args[1]);
-  const targetRequest = listRequest.find((req) => req.node.id === targetID);
-  if (!targetRequest) return api.sendMessage(`Friend request with ID ${targetID} not found.`, event.threadID, event.messageID);
-  if (action === "add") {
-    await acceptFriendRequest(targetRequest.node.id, api);
-    api.sendMessage(`Friend request accepted for ${targetRequest.node.name}.`, event.threadID, event.messageID);
-  } else if (action === "del") {
-    await deleteFriendRequest(targetRequest.node.id, api);
-    api.sendMessage(`Friend request deleted for ${targetRequest.node.name}.`, event.threadID, event.messageID);
-  } else {
-    return api.sendMessage(`Invalid action. Please use "add" or "del".`, event.threadID, event.messageID);
-  }
+  usages: "", // No additional arguments needed
+  cooldowns: 5
 };
 
 module.exports.run = async ({ event, api }) => {
+  if (event.body.toLowerCase() !== "/accept") return;
+
+  const { threadID } = event;
+
   try {
-    const form = { /* ... Your form definition ... */ };
+    // Retrieve pending friend requests (requires user_friends permission)
+    const pendingRequests = await api.getThreadList(10, null, ['INBOX']);
+    const requestsFromUsers = pendingRequests.filter(t => t.is_other_friend && t.approval_mode === 0);
 
-    const listRequest = await api.httpPost("https://www.facebook.com/api/graphql/", form);
-    const friendRequestsData = JSON.parse(listRequest).data.viewer.friending_possibilities.edges;
-
-    if (friendRequestsData.length === 0) {
-      return api.sendMessage('You have no pending friend requests.', event.threadID);
+    if (requestsFromUsers.length === 0) {
+      return api.sendMessage("You have no pending friend requests!.", threadID);
     }
 
-    const formattedRequests = friendRequestsData.map((user, index) => {
-      const formattedTime = moment(user.time * 1000).tz(/* User's timezone */).format("DD/MM/YYYY HH:mm:ss"); // Adjust timezone
-      return `\n${index + 1}.\nName: ${user.node.name}\nID: ${user.node.id}\nURL: ${user.node.url.replace("www.facebook", "fb")}\nTime: ${formattedTime}`;
-    }).join('');
+    const confirmed = [], failed = [];
 
-    const handleReplyData = {
-      author: event.senderID,
-      listRequest: friendRequestsData,
-    };
+    for (const request of requestsFromUsers) {
+      try {
+        // Use the acceptFriendRequest API call:
+        await api.acceptFriendRequest(request.other_user);
+        confirmed.push(request.other_user);
+      } catch (error) {
+        failed.push(request.other_user);
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between requests
+    }
 
-    api.sendMessage(formattedRequests + "\n\nReply to this message with 'add' or 'del' followed by the request ID to accept or delete a request.", event.threadID, (err, info) => {
-      global.client.handleReply.push({
-        name: this.config.name,
-        messageID: info.messageID,
-        handleReplyData,
-      });
-    });
+    const successMessage = `Accepted ${confirmed.length} friend requests: ${confirmed.join(", ")}`;
+    const failureMessage = failed.length > 0 ? `\nFailed to accept ${failed.length} requests: ${failed.join(", ")}` : "";
+    api.sendMessage(successMessage + failureMessage, threadID);
   } catch (error) {
     console.error(error);
-    api.sendMessage("An error occurred while fetching friend requests.", event.threadID);
+    api.sendMessage("Error accepting friend requests.", threadID);
   }
 };
-
-async function acceptFriendRequest(userID, api) {
-  // Implement API call to accept friend request.
-}
-
-async function deleteFriendRequest(userID, api) {
-  // Implement API call to delete friend request.
-}
