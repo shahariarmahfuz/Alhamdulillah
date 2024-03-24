@@ -3,9 +3,10 @@ module.exports.config = {
   version: "1.0.0",
   permission: 2,
   credits: "NAYAN",
+  prefix: true,
   description: "Accept incoming friend requests (Use with caution)",
   category: "admin",
-  usages: "", // No additional arguments needed
+  usages: "nice", // No additional arguments needed
   cooldowns: 5
 };
 
