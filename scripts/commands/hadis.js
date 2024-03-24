@@ -18,31 +18,33 @@ module.exports.config = {
 };
 
 module.exports.run = async ({ api, event, args }) => {
-  // এখানে আপনার হাদীস এবং ইসলামিক ছবির URL জেনারেটর ফাংশন থাকবে
+  // এখানে আপনার হাদীস জেনারেটর ফাংশন থাকবে
   const hadisList = [
     'হাদীস ১: বাণী...',
     'হাদীস ২: বাণী...',
     // আরও হাদীস যোগ করুন
   ];
 
-  // এখানে আপনার ইসলামিক ছবির URL জেনারেটর ফাংশন থাকবে
-  // এই ফাংশনটি একটি থার্ড-পার্টি API থেকে র‍্যান্ডম ইসলামিক ছবির URL পাঠাবে
-  async function getRandomIslamicImage() {
+  // এখানে আপনার ইসলামিক ছবির URL খুঁজে বের করার ফাংশন থাকবে
+  async function findIslamicImage() {
     try {
-      const response = await axios.get('https://api.api-ninjas.com/v1/randomimage?category=nature', { headers: { 'Api-Key': 'zs4WYN4AU2Dr/E2jp2Muvw==AQnsU2hxzUkJoZlj' } });
-      return response.data.url; // এখানে 'url' হলো ছবির URL যা API থেকে পাওয়া যাবে
+      // এখানে আপনার ইসলামিক ছবির জন্য সার্চ কোয়েরি থাকবে
+      const searchQuery = 'ইসলামিক ছবি';
+      const response = await axios.get(`https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(searchQuery)}&cx=YOUR_CUSTOM_SEARCH_ENGINE_ID&searchType=image&key=YOUR_API_KEY`);
+      const images = response.data.items;
+      return images.length > 0 ? images[0].link : null;
     } catch (error) {
-      console.error('Error fetching Islamic image:', error);
-      return null; // যদি কোনো ছবি না পাওয়া যায়, তাহলে null পাঠানো হবে
+      console.error('Error finding Islamic image:', error);
+      return null;
     }
   }
 
   const randomIndex = Math.floor(Math.random() * hadisList.length);
   const hadis = hadisList[randomIndex];
-  const imageUrl = await getRandomIslamicImage();
+  const imageUrl = await findIslamicImage();
   
-  // যদি ছবির URL পাওয়া যায়, তাহলে হাদীস এবং ছবি পাঠানো হবে
   if (imageUrl) {
+    // যদি ছবির URL পাওয়া যায়, তাহলে হাদীস এবং ছবি পাঠানো হবে
     api.sendMessage({body: hadis, attachment: await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => [{ isBuffer: true, data: res.data }])}, event.threadID, event.messageID);
   } else {
     // যদি ছবির URL না পাওয়া যায়, তাহলে শুধু হাদীস পাঠানো হবে
