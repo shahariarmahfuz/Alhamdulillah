@@ -1,10 +1,11 @@
 module.exports.config = {
   name: "hadis", // এখানে কমান্ডের নাম দিয়ে দিন
   version: "1.0.0",
-  hasPermssion: 0,
+  permssion: 0,
   credits: "nayan",
+  prefix: true,
   description: "হাদীস প্রদান করে",
-  commandCategory: "general",
+  category: "general",
   usages: "hadis",
   cooldowns: 5,
   dependencies: {
