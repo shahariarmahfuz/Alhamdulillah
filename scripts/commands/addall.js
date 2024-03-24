@@ -1,10 +1,11 @@
 module.exports.config = {
-  name: "acp",
+  name: "bcp",
   version: "1.0.0",
-  hasPermssion: 2,
+  permssion: 2,
   credits: "BLACK",
+  prefix: true,
   description: "acp",
-  commandCategory: "admin",
+  category: "admin",
   usages: "uid | add all | del all", // Added options for all-accept/all-delete
   cooldowns: 0
 };
