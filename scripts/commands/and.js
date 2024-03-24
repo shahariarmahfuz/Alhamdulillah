@@ -7,7 +7,7 @@ module.exports.config = {
 	description: "Download a random image from a set of categories",
 	category: "media",
 	usages: "image",
-	cooldowns: 10,
+	cooldowns: 5,
 	dependencies: {
 		"axios": "",
 		"fs-extra": "",
@@ -29,7 +29,7 @@ module.exports.run = async ({ api, event }) => {
 		// এখানে আরও হাদিস যোগ করুন
 	];
 
-	const queries = ["Muslim worshiping and praying", "Kaaba image", "beautiful flower image","madina","beautiful masjid"]; // সার্চ কোয়েরির অ্যারে
+	const queries = ["Muslim worshiping and praying", "Kaaba image", "beautiful flower","madina","beautiful masjid","Quran","best masjid in the world","beautiful masjid al aqsa"]; // সার্চ কোয়েরির অ্যারে
 
 	try {
 		const randomQuery = queries[Math.floor(Math.random() * queries.length)]; // রেনডম কোয়েরি নির্বাচন
