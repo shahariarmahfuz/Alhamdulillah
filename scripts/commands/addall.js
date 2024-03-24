@@ -3,7 +3,7 @@ module.exports.config = {
   version: "1.0.0",
   permssion: 2,
   credits: "BLACK",
-  prefix, true,
+  prefix: true,
   description: "acp",
   category: "admin",
   usages: "uid | add all | del all",
