@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "hadis", // এখানে কমান্ডের নাম দিয়ে দিন
+  name: "and", // এখানে কমান্ডের নাম দিয়ে দিন
   version: "1.0.0",
   permssion: 0,
   credits: "nayan",
