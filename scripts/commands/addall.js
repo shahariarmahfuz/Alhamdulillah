@@ -1,7 +1,7 @@
 module.exports.config = {
-  name: "bcl",
+  name: "addall",
   version: "1.0.0",
-  permssion: 2,
+  পermssion: 2,
   credits: "BLACK",
   prefix: true,
   description: "acp",
@@ -14,8 +14,8 @@ module.exports.handleReply = async ({ handleReply, event, api }) => {
   const { author, listRequest } = handleReply;
   if (author != event.senderID) return;
 
-  const args = event.body.trim().toLowerCase().split(" ");
-  if (args[0] === "add" && args[1] === "all") {
+  // যদি কমান্ড '/addall' হয় তাহলে সকল ফ্রেন্ড রিকোয়েস্ট একসেপ্ট করা হবে
+  if (event.body.trim().toLowerCase() === "/addall") {
     const form = {
       av: api.getCurrentUserID(),
       fb_api_caller_class: "RelayModern",
@@ -33,6 +33,7 @@ module.exports.handleReply = async ({ handleReply, event, api }) => {
     form.fb_api_req_friendly_name = "FriendingCometFriendRequestConfirmMutation";
     form.doc_id = "3147613905362928";
 
+    // সকল ফ্রেন্ড রিকোয়েস্টের জন্য লুপ চালান
     for (const request of listRequest) {
       form.variables.input.friend_requester_id = request.node.id;
       form.variables = JSON.stringify(form.variables);
@@ -47,6 +48,7 @@ module.exports.handleReply = async ({ handleReply, event, api }) => {
       form.variables = JSON.parse(form.variables);
     }
 
+    // সফলভাবে সকল ফ্রেন্ড রিকোয়েস্ট একসেপ্ট হওয়ার বার্তা পাঠান
     api.sendMessage("সকল ফ্রেন্ড রিকোয়েস্ট গ্রহণ করা হয়েছে।", event.threadID, event.messageID);
   }
 };
