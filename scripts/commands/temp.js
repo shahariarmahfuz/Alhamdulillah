@@ -1,12 +1,14 @@
 module.exports.config = {
-    name: "temp",
-    version: "1.0.5",
-    permission: 0,
-    prefix: true,
-    credits: "Deku",
-    description: "Get all uid and names in Group.",
-    category: "Media",
-    cooldowns: 2
+  name: "temp",
+  version: "1.0.0",
+  hasPermission: 0,
+  credits: "Nayan",
+  description: "msg",
+  prefix: true,
+  category: "user",
+  usages: "",
+  cooldowns: 5,
+  dependencies: {}
 };
 
 const axios = require('axios');
