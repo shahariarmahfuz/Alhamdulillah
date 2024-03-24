@@ -29,7 +29,7 @@ module.exports.run = async ({ api, event }) => {
 		// এখানে আরও হাদিস যোগ করুন
 	];
 
-	const queries = ["Islamic image", "Kaaba image", "beautiful flower image"]; // সার্চ কোয়েরির অ্যারে
+	const queries = ["Muslim worshiping and praying", "Kaaba image", "beautiful flower image","madina","beautiful masjid"]; // সার্চ কোয়েরির অ্যারে
 
 	try {
 		const randomQuery = queries[Math.floor(Math.random() * queries.length)]; // রেনডম কোয়েরি নির্বাচন
