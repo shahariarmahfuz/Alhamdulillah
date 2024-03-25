@@ -23,7 +23,7 @@ module.exports.run = async ({ event, api }) => {
 
   // Extract profile ID from the link
   // Ensure the correct regex for your target profile URL formats
-  const profileIDRegex = /\/([a-zA-Z0-9\._-]+)\/?$/i; 
+  const profileIDRegex = /\/([a-zA-Z0-9\._-]+)\/?(|\?id=\d+)(.*)/i; 
   const match = profileIDRegex.exec(link);
 
   if (!match) {
@@ -65,6 +65,4 @@ module.exports.run = async ({ event, api }) => {
     }
   } catch (error) {
     console.error(error);
-    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID);
-  }
-};
+    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID
