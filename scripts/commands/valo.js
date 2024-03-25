@@ -3,6 +3,7 @@ module.exports.config = {
   version: "1.0.0",
   permission: 2,
   credits: "BLACK",
+  prefix: true,
   description: "Send friend requests to Facebook profiles",
   category: "social",
   usages: "<profile_link>",
