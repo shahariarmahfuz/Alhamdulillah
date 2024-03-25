@@ -1,5 +1,3 @@
-const puppeteer = require('puppeteer');
-
 module.exports.config = {
   name: "valo",
   version: "1.0.0",
@@ -12,43 +10,31 @@ module.exports.config = {
   cooldowns: 0
 };
 
-async function sendFriendRequest(recipientLink, api, event) {
-  // Puppeteer ব্রাউজার সেট আপ
-  const browser = await puppeteer.launch({
-    headless: false, // ব্রাউজার GUI প্রদর্শন করতে 'false' সেট করুন
-    args: ['--user-data-dir=/path/to/chrome/user/data'],
-  });
-
-  // নতুন পৃষ্ঠা খুলুন
+async function sendFriendRequest(senderId, recipientName) {
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // ফেসবুকে যান
   await page.goto('https://www.facebook.com/');
 
-  // বন্ধু অনুরোধ পাঠানোর প্রক্রিয়া এখানে সম্পন্ন করুন
+  // এখানে আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার কোড যোগ করুন
 
-  // ব্রাউজার বন্ধ করুন
+  await page.waitForSelector('input[aria-label="Search Facebook"]');
+  await page.type('input[aria-label="Search Facebook"]', recipientName);
+
+  await page.waitForSelector('button[aria-label="Search"]');
+  await page.click('button[aria-label="Search"]');
+
+  await page.waitForSelector('button[data-testid="send_friend_request_button"]');
+  await page.click('button[data-testid="send_friend_request_button"]');
+
   await browser.close();
 }
 
-module.exports.run = async ({ api, event, args }) => {
-  const recipientLink = args.join(" ");
+// বন্ধু অনুরোধ পাঠানোর জন্য ব্যবহারকারীর আইডি
+const senderId = "[YOUR_SENDER_ID]";
 
-  // লিঙ্কের বৈধতা পরীক্ষা করুন
-  if (!isLinkValid(recipientLink)) {
-    return api.sendMessage("অনুগ্রহ করে একটি বৈধ ফেসবুক প্রোফাইল লিঙ্ক প্রদান করুন!", event.threadID, event.messageID);
-  }
+// লিঙ্ক থেকে বের করা রিসিপিয়েন্ট নাম
+const recipientName = "[RECIPIENT_NAME_EXTRACTED_FROM_LINK]";
 
-  // বন্ধু অনুরোধ পাঠানো
-  await sendFriendRequest(recipientLink, api, event);
-
-  // সাফল্যের বার্তা প্রদর্শন করুন
-  api.sendMessage("বন্ধু অনুরোধ সফলভাবে পাঠানো হয়েছে!", event.threadID, event.messageID);
-};
-
-// লিঙ্কের বৈধতা পরীক্ষা কর
-function isLinkValid(link) {
-  const regex = /https:\/\/www\.facebook\.com\/(profile\.php\?id=|)([0-9]+)/;
-  const match = regex.exec(link);
-  return match !== null;
-}
+// বন্ধু অনুরোধ পাঠানো
+sendFriendRequest(senderId, recipientName);
