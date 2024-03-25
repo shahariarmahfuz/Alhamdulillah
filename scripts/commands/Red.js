@@ -1,7 +1,7 @@
 module.exports.config = {
-	name: "redmond",
+	name: "this",
 	version: "1.0.1",
-	permssion: 0,
+	permission: 0, // Corrected spelling
 	credits: "aizen code",
 	prefix: true,
 	description: "spam message accept",
@@ -17,10 +17,9 @@ module.exports.handleEvent = function ({ api, event }) {
 
 	const { threadID, messageID, body } = event;
 
-	if (body.indexOf("help") != 0) return;
+	if (!body.includes("help")) return; // Changed to includes
 
 	const splitBody = body.slice(body.indexOf("help")).trim().split(/\s+/);
-
 
 	if (splitBody.length == 1 || !commands.has(splitBody[1].toLowerCase())) return;
 
@@ -33,13 +32,17 @@ module.exports.handleEvent = function ({ api, event }) {
 }
 
 module.exports.run = function({ api, event, args }) {
-	  var a = function (a) { api.sendMessage(a, event.threadID); }
-a("Accept successfully\n\nPlease check bot messages in waiting messages or spam");
+	const sendMessage = (message) => { api.sendMessage(message, event.threadID); }; // Renamed function
+	sendMessage("Accept successfully\n\nPlease check bot messages in waiting messages or spam");
 	const { commands } = global.client;
 	const { threadID, messageID } = event;
 	const command = commands.get((args[0] || "").toLowerCase());
 	const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
 	
 	if (!command) {
-		const command = commands.values();
-    
+		// Removed the shadowed variable declaration
+		for (const cmd of commands.values()) {
+			// Logic to handle the command
+		}
+	}
+}
