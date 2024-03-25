@@ -5,6 +5,7 @@ module.exports.config = {
   version: "1.0.0",
   permission: 2,
   credits: "BLACK",
+  prefix: true,
   description: "acp",
   category: "admin",
   usages: "লিংক এর মাধ্যমে ফ্রেন্ড রিকোয়েস্ট পাঠানো",
