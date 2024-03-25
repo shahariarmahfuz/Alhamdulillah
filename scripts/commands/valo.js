@@ -3,10 +3,10 @@ const puppeteer = require('puppeteer');
 module.exports.config = {
   name: "valo",
   version: "1.0.0",
-  hasPermission: 2,
+  permission: 2,
   credits: "BLACK",
   description: "acp",
-  commandCategory: "admin",
+  category: "admin",
   usages: "লিংক এর মাধ্যমে ফ্রেন্ড রিকোয়েস্ট পাঠানো",
   cooldowns: 0
 };
