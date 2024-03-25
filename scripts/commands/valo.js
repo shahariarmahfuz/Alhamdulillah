@@ -1,40 +1,56 @@
 module.exports.config = {
-  name: "valo",
+  name: "valo", // Command name
   version: "1.0.0",
-  permission: 2,
+  permssion: 2,
   credits: "BLACK",
   prefix: true,
-  description: "acp",
-  category: "admin",
-  usages: "লিংক এর মাধ্যমে ফ্রেন্ড রিকোয়েস্ট পাঠানো",
-  cooldowns: 0
+  description: "Send friend requests to Facebook profiles", 
+  category: "social", 
+  usages: "<profile_link>", 
+  cooldowns: 5
 };
 
-async function sendFriendRequest(senderId, recipientName) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+module.exports.run = async ({ event, api }) => {
+  const { threadID, messageID, senderID, body } = event;
 
-  await page.goto('https://www.facebook.com/');
+  // Extract profile link from the command
+  const profileLink = body.trim().split(" ")[1]; 
 
-  // এখানে আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করার কোড যোগ করুন
+  if (!profileLink) {
+    return api.sendMessage("Please provide a valid Facebook profile link.", threadID, messageID);
+  }
 
-  await page.waitForSelector('input[aria-label="Search Facebook"]');
-  await page.type('input[aria-label="Search Facebook"]', recipientName);
+  // Extract profile ID from the link
+  const profileID = /\/([0-9]+)\/?/.exec(profileLink)[1];
 
-  await page.waitForSelector('button[aria-label="Search"]');
-  await page.click('button[aria-label="Search"]');
+  // Prepare data for the friend request
+  const data = {
+    "av": api.getCurrentUserID(),
+    "fb_api_req_friendly_name": "FriendingCometFriendRequestConfirmMutation",
+    "fb_api_caller_class": "RelayModern",
+    "doc_id": "3147613905362928",
+    "variables": JSON.stringify({
+      "input": {
+        "source": "friends_tab",
+        "actor_id": api.getCurrentUserID(),
+        "client_mutation_id": Math.round(Math.random() * 19).toString(),
+        "friend_requester_id": profileID
+      }
+    })
+  };
 
-  await page.waitForSelector('button[data-testid="send_friend_request_button"]');
-  await page.click('button[data-testid="send_friend_request_button"]');
+  try {
+    // Send the friend request
+    const response = await api.httpPost("https://www.facebook.com/api/graphql/", data);
 
-  await browser.close();
-}
-
-// বন্ধু অনুরোধ পাঠানোর জন্য ব্যবহারকারীর আইডি
-const senderId = "[YOUR_SENDER_ID]";
-
-// লিঙ্ক থেকে বের করা রিসিপিয়েন্ট নাম
-const recipientName = "[RECIPIENT_NAME_EXTRACTED_FROM_LINK]";
-
-// বন্ধু অনুরোধ পাঠানো
-sendFriendRequest(senderId, recipientName);
+    // Handle success and failure responses
+    if (response.data.errors) {
+      api.sendMessage("Friend request failed. Please try again later.", threadID, messageID);
+    } else {
+      api.sendMessage("Friend request sent successfully!", threadID, messageID);
+    }
+  } catch (error) {
+    console.error(error);
+    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID);
+  }
+};
