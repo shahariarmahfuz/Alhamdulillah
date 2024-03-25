@@ -6,8 +6,8 @@
   "language": "en",
   "notification": true,
   "approval": false,
-  "PREFIX": "!",
-  "BOTNAME": "তোমাগো ভাবী 😾",
+  "PREFIX": "/",
+  "BOTNAME": "ভদ্র ছেলে",
   "OPERATOR": [
     "100075347119102",
     "100075347119102"
