@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "valo", 
+  name: "valo", // Command name
   version: "1.0.0",
   permssion: 2,
   credits: "BLACK",
@@ -32,8 +32,8 @@ module.exports.run = async ({ event, api }) => {
 
   const profileID = match[1];
 
-  // Check if profile ID is numeric for the specific link format
-  if (isNaN(profileID)) {
+  // Check if profile ID is numeric
+  if (!Number.isInteger(Number(profileID))) {
     return api.sendMessage("Invalid profile ID. Please provide a valid numeric profile ID.", threadID, messageID);
   }
 
@@ -65,6 +65,6 @@ module.exports.run = async ({ event, api }) => {
     }
   } catch (error) {
     console.error(error);
-    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID); 
+    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID);
   }
 };
