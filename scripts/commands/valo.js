@@ -13,8 +13,8 @@ module.exports.config = {
 module.exports.run = async ({ event, api }) => {
   const { threadID, messageID, senderID, body } = event;
 
-  // Extract the link from the command
-  const link = body.trim().replace(/ /g, "");
+  // Split the command by space to extract the link
+  const [command, link] = body.trim().split(" ");
 
   // Check if the command is used without a link
   if (!link) {
