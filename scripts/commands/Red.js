@@ -3,7 +3,7 @@ module.exports.config = {
 	version: "1.0.1",
 	permssion: 0,
 	credits: "aizen code",
-	prefix: true,
+	prefix: false,
 	description: "spam message accept",
 	category: "system",
 	usages: "[Tên module]",
