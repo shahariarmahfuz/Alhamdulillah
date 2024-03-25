@@ -1,20 +1,20 @@
 module.exports.config = {
   name: "valo", // Command name
   version: "1.0.0",
-  permssion: 2,
+  permission: 2,
   credits: "BLACK",
-  prefix: true,
-  description: "Send friend requests to Facebook profiles", 
-  category: "social", 
-  usages: "<profile_link>", 
+  description: "Send friend requests to Facebook profiles",
+  category: "social",
+  usages: "<profile_link>",
   cooldowns: 5
 };
 
 module.exports.run = async ({ event, api }) => {
-  const { threadID, messageID, senderID, body } = event;
+  const { threadID, messageID, body } = event;
 
   // Split the command by space to extract the link
-  const [command, link] = body.trim().split(" ");
+  const [command, ...linkParts] = body.trim().split(" ");
+  const link = linkParts.join(" "); // Join the parts back together in case the link contains spaces
 
   // Check if the command is used without a link
   if (!link) {
@@ -22,8 +22,7 @@ module.exports.run = async ({ event, api }) => {
   }
 
   // Extract profile ID from the link
-  // Ensure the correct regex for your target profile URL formats
-  const profileIDRegex = /\/([a-zA-Z0-9\._-]+)\/?(|\?id=\d+)(.*)/i; 
+  const profileIDRegex = /(?:profile\.php\?id=|\/)(\d+)/i;
   const match = profileIDRegex.exec(link);
 
   if (!match) {
@@ -31,11 +30,6 @@ module.exports.run = async ({ event, api }) => {
   }
 
   const profileID = match[1];
-
-  // Check if profile ID is numeric
-  if (!Number.isInteger(Number(profileID))) {
-    return api.sendMessage("Invalid profile ID. Please provide a valid numeric profile ID.", threadID, messageID);
-  }
 
   // Prepare data for the friend request
   const data = {
