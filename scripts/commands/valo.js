@@ -1,68 +1,29 @@
 module.exports.config = {
- name: "valo", // Command name
- version: "1.0.0",
- permssion: 2,
- credits: "BLACK",
+  name: "valo", // Command name
+  version: "1.0.0",
+  permission: 2, // 'permssion' এর স্থলে 'permission' হবে
+  credits: "BLACK",
   prefix: true,
- description: "Send friend requests to Facebook profiles",
- category: "social",
- usages: "<profile_link>",
- cooldowns: 5
+  description: "Type '/valo' to check for spam", // বর্ণনা যোগ করা হয়েছে
+  category: "social",
+  usages: "<profile_link>",
+  cooldowns: 5
 };
 
-module.exports.run = async ({ event, api }) => {
- const { threadID, messageID, body } = event;
+function processMessage(message) {
+  if (message.text === '/valo') {
+    // স্প্যাম বার্তা হিসেবে চিহ্নিত করুন
+    markMessageAsSpam(message);
 
- // Split the command by space to extract the link
- const [command, ...linkParts] = body.trim().split(" ");
- const link = linkParts.join(" "); 
+    // বার্তা গ্রহণ করুন
+    acceptMessage(message);
+  }
+}
 
- // Check if the command is used without a link
- if (!link) {
-  return api.sendMessage("Please provide a valid Facebook profile link after the '/valo' command.", threadID, messageID);
- }
+function markMessageAsSpam(message) {
+  // এখানে আপনার বোর্ডের স্প্যাম বার্তা চিহ্নিত করার ফাংশন যোগ করুন
+}
 
- // Extract profile ID from the link
- const profileIDRegex = /(?:profile\.php\?id=|\/)(\d+)/i;
- const match = profileIDRegex.exec(link);
-
- if (!match) {
-  return api.sendMessage("Invalid Facebook profile link format. Please check the link and try again.", threadID, messageID);
- }
-
- const profileID = match[1];
-
- // Prepare data for the friend request
- const data = {
-  "av": api.getCurrentUserID(),
-  "fb_api_req_friendly_name": "FriendingCometFriendRequestConfirmMutation",
-  "fb_api_caller_class": "RelayModern",
-  "doc_id": "3147613905362928",
-  "variables": JSON.stringify({
-   "input": {
-    "source": "friends_tab",
-    "actor_id": api.getCurrentUserID(),
-    "client_mutation_id": Math.round(Math.random() * 19).toString(),
-    "friend_requester_id": profileID
-   }
-  })
- };
-
- try {
-  // Send the friend request with a delay
-  await new Promise(resolve => setTimeout(resolve, 3000)); // 3 seconds delay
-
-  const response = await api.httpPost("https://www.facebook.com/api/graphql/", data);
-
-  // Handle success and failure responses
-  if (response.data.errors) {
-    console.error("Friend request error:", response.data.errors); // Log the error details
-   api.sendMessage("Friend request failed. Please try again later.", threadID, messageID);
-  } else {
-   api.sendMessage("Friend request sent successfully to " + link, threadID, messageID);
-  }
- } catch (error) {
-    console.error(error);
-  api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID);
- }
-};
+function acceptMessage(message) {
+  // এখানে আপনার বোর্ডের বার্তা গ্রহণ করার ফাংশন যোগ করুন
+}
