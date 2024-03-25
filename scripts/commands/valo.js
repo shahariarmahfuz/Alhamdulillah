@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "valo", // Command name
+  name: "valo", 
   version: "1.0.0",
   permssion: 2,
   credits: "BLACK",
@@ -65,4 +65,6 @@ module.exports.run = async ({ event, api }) => {
     }
   } catch (error) {
     console.error(error);
-    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID
+    api.sendMessage("An error occurred while sending the friend request. Please try again later.", threadID, messageID); 
+  }
+};
