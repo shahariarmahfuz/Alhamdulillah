@@ -1,10 +1,11 @@
 module.exports.config = {
-	name: "acceptthis",
+	name: "this",
 	version: "1.0.1",
-	hasPermssion: 0,
+	permssion: 0,
 	credits: "aizen code",
+	prefix: true,
 	description: "spam message accept",
-	commandCategory: "system",
+	category: "system",
 	usages: "[Tên module]",
 	cooldowns: 5
 };
