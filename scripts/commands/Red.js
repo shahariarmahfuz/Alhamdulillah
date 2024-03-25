@@ -1,5 +1,5 @@
 module.exports.config = {
-	name: "this",
+	name: "redmond",
 	version: "1.0.1",
 	permssion: 0,
 	credits: "aizen code",
