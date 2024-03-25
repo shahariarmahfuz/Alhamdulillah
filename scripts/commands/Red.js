@@ -1,5 +1,5 @@
 module.exports.config = {
-	name: "accept",
+	name: "/help",
 	version: "1.0.1",
 	permssion: 0,
 	credits: "aizen code",
@@ -8,7 +8,6 @@ module.exports.config = {
 	category: "system",
 	usages: "[Tên module]",
 	cooldowns: 5,
-	PREFIX: "/"
 };
 
 module.exports.handleEvent = function ({ api, event }) {
