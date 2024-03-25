@@ -31,6 +31,11 @@ module.exports.run = async ({ event, api }) => {
 
   const profileID = match[1];
 
+  // Check if profile ID is numeric for the specific link format
+  if (isNaN(profileID)) {
+    return api.sendMessage("Invalid profile ID. Please provide a valid numeric profile ID.", threadID, messageID);
+  }
+
  // Prepare data for the friend request
  const data = {
   "av": api.getCurrentUserID(),
